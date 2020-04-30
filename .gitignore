@@ -1,0 +1,5 @@
+*.key
+.env
+node_modules
+.nexmo-app
+games.db
