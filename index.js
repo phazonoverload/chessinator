@@ -221,14 +221,14 @@ const makeMove = async (uuid, instruction, timestamp) => {
             } else {
                 if(color.f == 'white') {
                     await Games.update( { _id: game._id }, { $set: { fen: chess.fen(), 'players.white.timer': secsAfterPlay }} )
-                    await sendMessage(white.uuid, `Move accepted and it's now black's turn. It took you ${secsUsed} seconds, which means you have ${Math.floor(white.timer/60) > 0 ? Math.floor(white.timer/60) + ' minutes' : white.timer + ' seconds' } left from when your turn begins.`)
-                    await sendMessage(black.uuid, `It is now your turn. Reply with "move old_space to new_space" to play, for example "move a2 to a4". You have ${Math.floor(black.timer/60) > 0 ? Math.floor(black.timer/60) + ' minutes' : black.timer + ' seconds' } remaining, which pauses once you've sent a valid move.`)
+                    await sendMessage(white.uuid, `Move accepted and it's now black's turn. You have ${secsToTime(secsAfterPlay)} remaining.`)
+                    await sendMessage(black.uuid, `It's now your turn.`)
                     const message = await sendBoard(black.uuid, chess.fen())
                     await Games.update({ _id: game._id }, { $set: { 'players.black.lastMove.messageId': message } })
                 } else {
                     await Games.update( { _id: game._id }, { $set: { fen: chess.fen(), 'players.black.timer': secsAfterPlay }} )
-                    await sendMessage(black.uuid, `Move accepted and it's now white's turn. It took you ${secsUsed} seconds, which means you have ${Math.floor(black.timer/60) > 0 ? Math.floor(black.timer/60) + ' minutes' : black.timer + ' seconds' } left from when your turn begins.`)
-                    await sendMessage(white.uuid, `It is now your turn. Reply with "move old_space to new_space" to play, for example "move a2 to a4". You have ${Math.floor(white.timer/60) > 0 ? Math.floor(white.timer/60) + ' minutes' : white.timer + ' seconds' } remaining, which pauses once you've sent a valid move.`)
+                    await sendMessage(black.uuid, `Move accepted and it's now black's turn. You have ${secsToTime(secsAfterPlay)} remaining.`)
+                    await sendMessage(white.uuid, `It is now your turn.`)
                     const message = await sendBoard(white.uuid, chess.fen())
                     await Games.update({ _id: game._id }, { $set: { 'players.white.lastMove.messageId': message } })
                 }
@@ -261,6 +261,12 @@ const stripFirstWord = (string) => {
     let stringArray = string.split(" ")
     stringArray.shift()
     return stringArray.join(" ")
+}
+
+const secsToTime = (secs) => {
+    const minutes = (Math.floor(secs / 60)).toString().padStart(2, '0');
+    const seconds = (secs % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`
 }
 
 app.post('/inbound', async (req, res) => {
