@@ -15,5 +15,6 @@ This project utilizes:
 * [Create a Vonage API Application](https://dashboard.nexmo.com/applications/new) with Messages capabilities - point at a public URL where you will run this application
 * Link your application to your Facebook page from the application settings
 * Clone this repository
+* Inside the project directory run `npm install`
 * Rename `.env.example` to `.env` and populate credentials
 * Run the application with `node index.js`
